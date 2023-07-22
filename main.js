@@ -14,7 +14,7 @@ let storeMyPokemon;
 const myPokemon = document.getElementById("myPokemon");
 myPokemon.addEventListener("submit", function (e) {
   e.preventDefault();
-  event.stopPropagation();
+  // e.stopPropagation();
   const pokemonName = document.getElementById("chooseMyPokemon").value;
   console.log(pokemonName);
   const cleanName = pokemonName.toLowerCase().trim();
@@ -38,9 +38,9 @@ myPokemon.addEventListener("submit", function (e) {
 });
 
 const myPokemon2 = document.getElementById("myPokemon2");
-myPokemon.addEventListener("submit", function (e) {
+myPokemon2.addEventListener("submit", function (e) {
   e.preventDefault();
-  event.stopPropagation();
+  // e.stopPropagation();
   const pokemonName = document.getElementById("chooseMyPokemon2").value;
   console.log(pokemonName);
   const cleanName = pokemonName.toLowerCase().trim();
@@ -72,9 +72,29 @@ myPokemon.addEventListener("submit", function (e) {
 
 I want to try to do this with a class.
 
-The forms are still messed up but I'm going to try to do some branches real quick
+What things do we need for a pokemon?
+
+-we need a text input area for the pokemon
+  document.getElementById('chooseMyPokemon')
+- we need a display area for that pokemon
+  document.getElementById('displayMyPokemon')
+    .insertAdjacentHTML("beforeend", html);
 
 
-TESTING NOTES test test
+
+-query that pokemon (will be a method)
+
 
 */
+
+class Human {
+  constructor(name, height, weight, dob) {
+    this.name = name;
+    this.height = height;
+    this.weight = weight;
+    this.dob = dob;
+  }
+  greeting() {
+    return "Hello " + this.name + "!";
+  }
+}
