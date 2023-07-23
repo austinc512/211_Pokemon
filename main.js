@@ -56,3 +56,12 @@ const enemyDisplay = document.getElementById("displayMyPokemon2");
 const enemyForm = document.getElementById("myPokemon2");
 
 const enemyPokemon = new Pokemon(enemyInput, enemyDisplay, enemyForm, "enemy");
+
+/*
+
+Other tasks:
+
+-make UI look nice
+-make win logic
+
+*/
