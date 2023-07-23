@@ -195,7 +195,99 @@ GET https://pokeapi.co/api/v2/type/fire/
 
 const compareBtn = document.getElementById("comparePokemon");
 compareBtn.addEventListener("click", function () {
-  // do something
+  if (!friendPokemon.name || !enemyPokemon.name) {
+    console.log(`not enough info`);
+    return;
+  } else {
+    console.log(`looks good`);
+  }
   console.log(friendPokemon.types);
   console.log(enemyPokemon.types);
+
+  // I'm only using pokemon types to predict the winner.
+  // type effectiveness in pokemon is done with multipliers
+  // if one of my pokemon's types is super effective against the enemy, multiply my probability by 2
+  // if one of my pokemon's types is weak against the enemy, multiply enemy probability by 2
+  let friendProbability = 1;
+  let enemyProbability = 1;
+
+  console.log(`types fetch: ${friendPokemon.types[0]}`);
+  fetch(`https://pokeapi.co/api/v2/type/${friendPokemon.types[0]}/`)
+    .then((response) => response.json())
+    .then((response) => {
+      console.log(response.damage_relations);
+      let myDamageRelations = new Object(response.damage_relations);
+      console.log(myDamageRelations);
+      for (let item of myDamageRelations.double_damage_from) {
+        console.log(item.name);
+        if (enemyPokemon.types.includes(item.name)) {
+          console.log(`enemy has super effective type: ${item.name}`);
+          enemyProbability *= 2;
+        }
+      }
+      // for (let item of myDamageRelations.double_damage_from) {
+      //   console.log(item.name);
+      //   if (enemyPokemon.types.includes(item.name)) {
+      //     console.log(`enemy has super effective type: ${item.name}`);
+      //     enemyProbability *= 2;
+      //   }
+      // }
+    });
 });
+
+/*
+
+Charizard vs. Blastoise example
+
+const friendTypes // ['fire', 'flying']
+enemyTypes // ['water']
+
+let friendScore = 1;
+let enemyScore = 1;
+
+query friend types
+GET https://pokeapi.co/api/v2/type/fire/
+GET https://pokeapi.co/api/v2/type/flying/
+
+(can be 2 different types)
+
+within each query, have to do a few things
+
+response.damage_relations
+
+{
+    "damage_relations": {
+        "double_damage_from": [
+            {
+                "name": "bug",
+                "url": "https://pokeapi.co/api/v2/type/7/"
+            },
+        ],
+     "double_damage_to": [
+            {
+                "name": "bug",
+                "url": "https://pokeapi.co/api/v2/type/7/"
+            },
+        ],  
+        "half_damage_from": [
+            {
+                "name": "bug",
+                "url": "https://pokeapi.co/api/v2/type/7/"
+            },
+        ],
+     "half_damage_to": [
+            {
+                "name": "bug",
+                "url": "https://pokeapi.co/api/v2/type/7/"
+            },
+        ],                    
+        "no_damage_from": [],
+        "no_damage_to": []
+} 
+
+iterate through response.damage_relations
+
+for item in response.damage_relations
+
+
+*/
