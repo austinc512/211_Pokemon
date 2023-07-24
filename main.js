@@ -151,8 +151,6 @@ compareBtn.addEventListener("click", function () {
   if (!friendPokemon.name || !enemyPokemon.name) {
     console.log(`not enough info`);
     return;
-  } else {
-    console.log(`looks good`);
   }
   console.log(friendPokemon.types);
   console.log(enemyPokemon.types);
@@ -160,9 +158,8 @@ compareBtn.addEventListener("click", function () {
   const friendEffectivenessArray = [];
   const enemyEffectivenessArray = [];
 
-  // make into for of loop iterating over friendPokemon.types
-  // my pokemon's types get passed into the for loop
-  // we check each one against the enemy's type(s) any of these are matched:
+  // my pokemon's type(s) get passed into the for loop
+  // we check each one against the enemy's type(s) and see if any of these are matched:
   // double_damage_from, double_damage_to, half_damage_from, half_damage_to, no_damage_from, no_damage_to
   for (let i = 0; i < friendPokemon.types.length; i++) {
     fetch(`https://pokeapi.co/api/v2/type/${friendPokemon.types[i]}/`)
@@ -245,7 +242,9 @@ function handleProbability(
   friendPokemonTypeCount
 ) {
   if (i + 1 < friendPokemonTypeCount) {
-    console.log(`Iteration hasn't completed yet. Waiting.`);
+    console.log(
+      `We haven't finished iterating over my pokemon's types yet. Waiting.`
+    );
   } else {
     const friendScore =
       friendEffectivenessArray.reduce((acc, curr) => acc + curr, 0) /
@@ -253,14 +252,18 @@ function handleProbability(
     const enemyScore =
       enemyEffectivenessArray.reduce((acc, curr) => acc + curr, 0) /
       enemyEffectivenessArray.length;
+    const winnerOutput = document.getElementById("predictWinner");
     if (friendScore > enemyScore) {
       console.log(`${friendPokemon.name} is predicted to be the winner`);
+      winnerOutput.innerHTML = `${friendPokemon.name} is predicted to be the winner`;
     } else if (enemyScore > friendScore) {
       console.log(`${enemyPokemon.name} is predicted to be the winner`);
+      winnerOutput.innerHTML = `${enemyPokemon.name} is predicted to be the winner`;
     } else {
       console.log(
         `This logic only considers the pokemons' types, so we do not have enough info to make a prediction`
       );
+      winnerOutput.innerHTML = `This logic only considers the pokemons' types, so we do not have enough info to make a prediction`;
     }
   }
 }
@@ -285,7 +288,6 @@ no_damage_to:
 [[Prototype]]
 : 
 Object
-
 
 */
 
