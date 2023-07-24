@@ -1,8 +1,9 @@
-/* body {
+body {
   background-image: url(./gen3_overlay_1.png);
   background-repeat: no-repeat;
   background-size: cover;
   width: 556px;
   height: 371px;
   margin: 0 auto;
-} */
+  text-align: center;
+}

@@ -165,12 +165,13 @@ compareBtn.addEventListener("click", function () {
   // double_damage_from, double_damage_to, half_damage_from, half_damage_to, no_damage_from, no_damage_to
   for (let i = 0; i < friendPokemon.types.length; i++) {
     fetch(`https://pokeapi.co/api/v2/type/${friendPokemon.types[i]}/`)
-      // I have to make 2 GET requests, and the implementation has to suit my use of a for loop here.
+      // Sometimes I have to make 2 GET requests, and the implementation has to suit my use of a for loop here.
       .then((response) => response.json())
       .then((response) => {
         let friendProbability = 1;
         let enemyProbability = 1;
         let myDamageRelations = new Object(response.damage_relations);
+        // ^^ Is there a JSON method I could also use here?
         console.log(myDamageRelations);
         for (let item of myDamageRelations.double_damage_from) {
           // w/o creating myDamageRelations object, this was just returning the names of elements b/c it's an API response in JSON, I think...
