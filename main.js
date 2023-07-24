@@ -204,36 +204,124 @@ compareBtn.addEventListener("click", function () {
   console.log(friendPokemon.types);
   console.log(enemyPokemon.types);
 
-  // I'm only using pokemon types to predict the winner.
-  // type effectiveness in pokemon is done with multipliers
-  // if one of my pokemon's types is super effective against the enemy, multiply my probability by 2
-  // if one of my pokemon's types is weak against the enemy, multiply enemy probability by 2
-  let friendProbability = 1;
-  let enemyProbability = 1;
+  const friendEffectivenessArray = [];
+  const enemyEffectivenessArray = [];
 
+  // make into for of loop iterating over friendPokemon.types
   console.log(`types fetch: ${friendPokemon.types[0]}`);
-  fetch(`https://pokeapi.co/api/v2/type/${friendPokemon.types[0]}/`)
-    .then((response) => response.json())
-    .then((response) => {
-      console.log(response.damage_relations);
-      let myDamageRelations = new Object(response.damage_relations);
-      console.log(myDamageRelations);
-      for (let item of myDamageRelations.double_damage_from) {
-        console.log(item.name);
-        if (enemyPokemon.types.includes(item.name)) {
-          console.log(`enemy has super effective type: ${item.name}`);
-          enemyProbability *= 2;
+  for (let i = 0; i < friendPokemon.types.length; i++) {
+    fetch(`https://pokeapi.co/api/v2/type/${friendPokemon.types[i]}/`)
+      .then((response) => response.json())
+      .then((response) => {
+        // I'm only using pokemon types to predict the winner.
+        // type effectiveness in pokemon is done with multipliers
+        // if one of my pokemon's types is super effective against the enemy, multiply my probability by 2
+        // if one of my pokemon's types is weak against the enemy, multiply enemy probability by 2
+        // let friendProbability = 1;
+        // let enemyProbability = 1;
+        let friendProbability = 1;
+        let enemyProbability = 1;
+        let myDamageRelations = new Object(response.damage_relations);
+        console.log(myDamageRelations);
+        for (let item of myDamageRelations.double_damage_from) {
+          // console.log(item.name);
+          if (enemyPokemon.types.includes(item.name)) {
+            console.log(`My pokemon takes double damage from: ${item.name}`);
+            enemyProbability *= Math.sqrt(2);
+            console.log(`enemyProbability: ${enemyProbability}`);
+          }
         }
-      }
-      // for (let item of myDamageRelations.double_damage_from) {
-      //   console.log(item.name);
-      //   if (enemyPokemon.types.includes(item.name)) {
-      //     console.log(`enemy has super effective type: ${item.name}`);
-      //     enemyProbability *= 2;
-      //   }
-      // }
-    });
+        for (let item of myDamageRelations.double_damage_to) {
+          // console.log(item.name);
+          if (enemyPokemon.types.includes(item.name)) {
+            console.log(`My pokemon has deals double damage to: ${item.name}`);
+            friendProbability *= Math.sqrt(2);
+            console.log(`friendProbability: ${friendProbability}`);
+          }
+        }
+        for (let item of myDamageRelations.half_damage_from) {
+          // console.log(item.name);
+          if (enemyPokemon.types.includes(item.name)) {
+            console.log(`My pokemon takes half damage from: ${item.name}`);
+            enemyProbability /= Math.sqrt(2);
+            console.log(
+              `enemyProbability got divided by sqrt(2): ${enemyProbability}`
+            );
+          }
+        }
+        for (let item of myDamageRelations.half_damage_to) {
+          // console.log(item.name);
+          if (enemyPokemon.types.includes(item.name)) {
+            console.log(`My pokemon deals half damage to: ${item.name}`);
+            friendProbability /= Math.sqrt(2);
+            console.log(
+              `My probability got divided by sqrt(2): ${friendProbability}`
+            );
+          }
+        }
+        for (let item of myDamageRelations.no_damage_from) {
+          // console.log(item.name);
+          if (enemyPokemon.types.includes(item.name)) {
+            console.log(`My pokemon takes no damage from: ${item.name}`);
+            enemyProbability = 0;
+            console.log(`enemyProbability for this iteration became 0`);
+          }
+        }
+        for (let item of myDamageRelations.no_damage_to) {
+          // console.log(item.name);
+          if (enemyPokemon.types.includes(item.name)) {
+            console.log(`My pokemon deals no damage to: ${item.name}`);
+            friendProbability = 0;
+            console.log(`friendProbability for this iteration became 0`);
+          }
+        }
+
+        friendEffectivenessArray.push(friendProbability);
+        enemyEffectivenessArray.push(enemyProbability);
+      })
+      .then(() => {
+        console.log("friend: ", friendEffectivenessArray);
+        console.log("enemy: ", enemyEffectivenessArray);
+      });
+  }
 });
+
+/*
+
+myDamageRelations:
+
+{double_damage_from: Array(3), double_damage_to: Array(4), half_damage_from: Array(6), half_damage_to: Array(4), no_damage_from: Array(0), …}
+double_damage_from: 
+(3) [{…}, {…}, {…}]
+double_damage_to: 
+(4) [{…}, {…}, {…}, {…}]
+half_damage_from: 
+(6) [{…}, {…}, {…}, {…}, {…}, {…}]
+half_damage_to: 
+(4) [{…}, {…}, {…}, {…}]
+no_damage_from: 
+[]
+no_damage_to: 
+[]
+[[Prototype]]
+: 
+Object
+
+example: 
+Fire does half damage to water.
+Water also does double damage to fire.
+
+I think the multiplier for each of these should be Math.sqrt(2)
+if there's a fire vs. water match up, I want the water pokemon to be twice as likely to win.
+
+
+Fire does half damage to water. - water pokemon's probability * Math.sqrt(2)
+Water also does double damage to fire. - water pokemon's probability * Math.sqrt(2)
+
+overall the water pokemon is twice as likely to win.
+
+
+*/
 
 /*
 
