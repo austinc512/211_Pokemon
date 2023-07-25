@@ -274,7 +274,10 @@ function handleProbability(
       console.log(
         `This logic only considers the pokemons' types, so we do not have enough info to make a prediction`
       );
-      winnerOutput.innerHTML = `This logic only considers the pokemons' types, so we do not have enough info to make a prediction`;
+      winnerOutput.innerHTML = `This logic only considers the pokemons' types, so we do not have enough info to make a prediction
+      
+      friend: ${friendPokemon.types}
+      enemy: ${enemyPokemon.types}`;
     }
   }
 }
