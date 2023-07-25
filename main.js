@@ -14,6 +14,8 @@ class Pokemon {
   handleFormSubmit = (event) => {
     event.preventDefault();
     console.log(this.textInput);
+    // NOTE: need to NOT fetch if text input is empty
+    // also, don't fetch if a selected pokemon already exists
     const cleanName = this.textInput.value.toLowerCase().trim();
     fetch(`https://pokeapi.co/api/v2/pokemon/${cleanName}`)
       .then((response) => response.json())
@@ -163,14 +165,21 @@ compareBtn.addEventListener("click", function () {
   // double_damage_from, double_damage_to, half_damage_from, half_damage_to, no_damage_from, no_damage_to
   for (let i = 0; i < friendPokemon.types.length; i++) {
     fetch(`https://pokeapi.co/api/v2/type/${friendPokemon.types[i]}/`)
+      // Sometimes I have to make 2 GET requests, and the implementation has to suit my use of a for loop here.
       .then((response) => response.json())
       .then((response) => {
         let friendProbability = 1;
         let enemyProbability = 1;
         let myDamageRelations = new Object(response.damage_relations);
+        // ^^ Is there a JSON method I could also use here?
         console.log(myDamageRelations);
         for (let item of myDamageRelations.double_damage_from) {
+          // w/o creating myDamageRelations object, this was just returning the names of elements b/c it's an API response in JSON, I think...
+          // not even 100% sure what the hell happened there, but creating this object solved the problem.
           if (enemyPokemon.types.includes(item.name)) {
+            // if BOTH of enemy Pokemon's types are super effective, I'm still only changing the probability once.
+            // one strength of this approach is when the enemy has 2 types and one of those types causes it to be immune from my current type iteration
+            // I think this is a good middle ground, and I can't be bothered otherwise.
             console.log(`My pokemon takes double damage from: ${item.name}`);
             enemyProbability *= Math.sqrt(2);
             console.log(`enemyProbability: ${enemyProbability}`);
@@ -220,6 +229,7 @@ compareBtn.addEventListener("click", function () {
         enemyEffectivenessArray.push(enemyProbability);
       })
       .then(() => {
+        // there's too much shit going on in this function, so I'm handling the rest separately.
         console.log("i:", i);
         console.log("friend: ", friendEffectivenessArray);
         console.log("enemy: ", enemyEffectivenessArray);
@@ -245,6 +255,7 @@ function handleProbability(
     console.log(
       `We haven't finished iterating over my pokemon's types yet. Waiting.`
     );
+    // this allows me to deal with the asychronous nature the for loop in the event handler
   } else {
     const friendScore =
       friendEffectivenessArray.reduce((acc, curr) => acc + curr, 0) /
@@ -263,7 +274,10 @@ function handleProbability(
       console.log(
         `This logic only considers the pokemons' types, so we do not have enough info to make a prediction`
       );
-      winnerOutput.innerHTML = `This logic only considers the pokemons' types, so we do not have enough info to make a prediction`;
+      winnerOutput.innerHTML = `This logic only considers the pokemons' types, so we do not have enough info to make a prediction
+      
+      friend: ${friendPokemon.types}
+      enemy: ${enemyPokemon.types}`;
     }
   }
 }
