@@ -16,7 +16,11 @@ class Pokemon {
     console.log(this.textInput);
     // NOTE: need to NOT fetch if text input is empty
     // also, don't fetch if a selected pokemon already exists
-    const cleanName = this.textInput.value.toLowerCase().trim();
+    const cleanName = this.textInput.value
+      .toLowerCase()
+      .trim()
+      .match(/[a-z]/gi)
+      .join("");
     fetch(`https://pokeapi.co/api/v2/pokemon/${cleanName}`)
       .then((response) => response.json())
       .then((response) => {
@@ -263,86 +267,6 @@ compareBtn.addEventListener("click", function () {
         processForExit();
       });
   }
-
-  // for (let i = 0; i < friendPokemon.types.length; i++) {
-  //   fetch(`https://pokeapi.co/api/v2/type/${friendPokemon.types[i]}/`)
-  //     // Sometimes I have to make 2 GET requests.
-  //     // the second promise is getting resolved before the first sometimes, which causes a bug.
-  //     .then((response) => response.json())
-  //     .then((response) => {
-  //       let friendProbability = 1;
-  //       let enemyProbability = 1;
-  //       let myDamageRelations = new Object(response.damage_relations);
-  //       // ^^ Is there a JSON method I could also use here?
-  //       console.log(myDamageRelations);
-  //       for (let item of myDamageRelations.double_damage_from) {
-  //         // w/o creating myDamageRelations object, this was just returning the names of elements b/c it's an API response in JSON, I think...
-  //         // not even 100% sure what the hell happened there, but creating this object solved the problem.
-  //         if (enemyPokemon.types.includes(item.name)) {
-  //           // this DOES increment twice. good.
-  //           console.log(`My pokemon takes double damage from: ${item.name}`);
-  //           enemyProbability *= Math.sqrt(2);
-  //           console.log(`enemyProbability: ${enemyProbability}`);
-  //         }
-  //       }
-  //       for (let item of myDamageRelations.double_damage_to) {
-  //         if (enemyPokemon.types.includes(item.name)) {
-  //           console.log(`My pokemon has deals double damage to: ${item.name}`);
-  //           friendProbability *= Math.sqrt(2);
-  //           console.log(`friendProbability: ${friendProbability}`);
-  //         }
-  //       }
-  //       for (let item of myDamageRelations.half_damage_from) {
-  //         if (enemyPokemon.types.includes(item.name)) {
-  //           console.log(`My pokemon takes half damage from: ${item.name}`);
-  //           enemyProbability /= Math.sqrt(2);
-  //           console.log(
-  //             `enemyProbability got divided by sqrt(2): ${enemyProbability}`
-  //           );
-  //         }
-  //       }
-  //       for (let item of myDamageRelations.half_damage_to) {
-  //         if (enemyPokemon.types.includes(item.name)) {
-  //           console.log(`My pokemon deals half damage to: ${item.name}`);
-  //           friendProbability /= Math.sqrt(2);
-  //           console.log(
-  //             `My probability got divided by sqrt(2): ${friendProbability}`
-  //           );
-  //         }
-  //       }
-  //       for (let item of myDamageRelations.no_damage_from) {
-  //         if (enemyPokemon.types.includes(item.name)) {
-  //           console.log(`My pokemon takes no damage from: ${item.name}`);
-  //           enemyProbability = 0;
-  //           console.log(`enemyProbability for this iteration became 0`);
-  //         }
-  //       }
-  //       for (let item of myDamageRelations.no_damage_to) {
-  //         if (enemyPokemon.types.includes(item.name)) {
-  //           console.log(`My pokemon deals no damage to: ${item.name}`);
-  //           friendProbability = 0;
-  //           console.log(`friendProbability for this iteration became 0`);
-  //         }
-  //       }
-
-  //       friendEffectivenessArray.push(friendProbability);
-  //       enemyEffectivenessArray.push(enemyProbability);
-  //     })
-  //     .then(() => {
-  //       // there's too much shit going on in this function, so I'm handling the rest separately.
-  //       console.log("i:", i);
-  //       console.log("friend: ", friendEffectivenessArray);
-  //       console.log("enemy: ", enemyEffectivenessArray);
-  //       console.log("friendPokemon.types", friendPokemon.types);
-  //       console.log("enemyPokemon.types", enemyPokemon.types);
-  //       handleProbability(
-  //         i,
-  //         friendEffectivenessArray,
-  //         enemyEffectivenessArray,
-  //         friendPokemon.types.length
-  //       );
-  //     });
-  // }
 });
 
 function handleProbability(friendEffectivenessArray, enemyEffectivenessArray) {
