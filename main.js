@@ -91,15 +91,8 @@ as a first-level property from the GET charizard response:
   ],
 
 
-const friendTypes = [];  
-for (let item of response.types) {
-  friendTypes.push(item.type.name)
-}  
-
-
 
 GET https://pokeapi.co/api/v2/type/fire/
-
 
 fake response:
 {
@@ -130,8 +123,9 @@ fake response:
         ],                    
         "no_damage_from": [],
         "no_damage_to": []
-} 
-
+  } 
+...
+}  
 
 example: 
 Fire does half damage to water.
@@ -148,9 +142,6 @@ overall the water pokemon is twice as likely to win.
 
 */
 
-// this is completely fucked due to async nature of promises.
-// need to fetch both requests BEFORE handling anything
-
 const compareBtn = document.getElementById("comparePokemon");
 compareBtn.addEventListener("click", function () {
   if (!friendPokemon.name || !enemyPokemon.name) {
@@ -163,26 +154,78 @@ compareBtn.addEventListener("click", function () {
   const friendEffectivenessArray = [];
   const enemyEffectivenessArray = [];
 
-  /*
+  // sometimes my pokemon will have 2 types, and I need to make damage comparisons based on both types
+  // this function is modular and can be used for both scenarios.
+  // this also makes the code more DRY
+  function handleDamageCalc(response) {
+    let friendProbability = 1;
+    let enemyProbability = 1;
+    let myDamageRelations = new Object(response.damage_relations);
+    for (let item of myDamageRelations.double_damage_from) {
+      if (enemyPokemon.types.includes(item.name)) {
+        console.log(`My pokemon takes double damage from: ${item.name}`);
+        enemyProbability *= Math.sqrt(2);
+        console.log(`enemyProbability: ${enemyProbability}`);
+      }
+    }
+    for (let item of myDamageRelations.double_damage_to) {
+      if (enemyPokemon.types.includes(item.name)) {
+        console.log(`My pokemon has deals double damage to: ${item.name}`);
+        friendProbability *= Math.sqrt(2);
+        console.log(`friendProbability: ${friendProbability}`);
+      }
+    }
+    for (let item of myDamageRelations.half_damage_from) {
+      if (enemyPokemon.types.includes(item.name)) {
+        console.log(`My pokemon takes half damage from: ${item.name}`);
+        enemyProbability /= Math.sqrt(2);
+        console.log(
+          `enemyProbability got divided by sqrt(2): ${enemyProbability}`
+        );
+      }
+    }
+    for (let item of myDamageRelations.half_damage_to) {
+      if (enemyPokemon.types.includes(item.name)) {
+        console.log(`My pokemon deals half damage to: ${item.name}`);
+        friendProbability /= Math.sqrt(2);
+        console.log(
+          `My probability got divided by sqrt(2): ${friendProbability}`
+        );
+      }
+    }
+    for (let item of myDamageRelations.no_damage_from) {
+      if (enemyPokemon.types.includes(item.name)) {
+        console.log(`My pokemon takes no damage from: ${item.name}`);
+        enemyProbability = 0;
+        console.log(`enemyProbability for this iteration became 0`);
+      }
+    }
+    for (let item of myDamageRelations.no_damage_to) {
+      if (enemyPokemon.types.includes(item.name)) {
+        console.log(`My pokemon deals no damage to: ${item.name}`);
+        friendProbability = 0;
+        console.log(`friendProbability for this iteration became 0`);
+      }
+    }
 
-if my pokemon has 2 types, do both fetch requests first.
+    friendEffectivenessArray.push(friendProbability);
+    enemyEffectivenessArray.push(enemyProbability);
+  }
 
-if 1 type
-  handle
+  // at the end of my API response handling, I'm doing a final round of logging.
+  // also makes implementation more DRY
+  function processForExit() {
+    console.log("friend: ", friendEffectivenessArray);
+    console.log("enemy: ", enemyEffectivenessArray);
+    console.log("friendPokemon.types", friendPokemon.types);
+    console.log("enemyPokemon.types", enemyPokemon.types);
+    handleProbability(friendEffectivenessArray, enemyEffectivenessArray);
+  }
 
-if 2 types
-  separate handle  
-
-  
-
-
-
-
-*/
-
-  // a pokemon can have either 1 or 2 types
+  // if pokemon has 2 types:
   if (friendPokemon.types.length > 1) {
-    // promise.all
+    // I need to capture both API responses FIRST and then do some data handling based off of BOTH.
+    // I previously iterated over my pokemon's types in a for loop, which caused a nasty bug when the second promise resolved before the first.
     function fetchAPI(url) {
       return fetch(url).then((response) => response.json());
     }
@@ -191,170 +234,33 @@ if 2 types
 
       return Promise.all(promises);
     }
-
     handleAPIRequests([
       `https://pokeapi.co/api/v2/type/${friendPokemon.types[0]}/`,
       `https://pokeapi.co/api/v2/type/${friendPokemon.types[1]}/`,
     ])
       .then(([response1, response2]) => {
-        // Logic using both API responses
         console.log("Response 1 damage relations:", response1.damage_relations);
         console.log("Response 2:", response2.damage_relations);
         return [response1, response2];
       })
       .then(([response1, response2]) => {
-        [response1, response2].forEach((element) => {
-          let friendProbability = 1;
-          let enemyProbability = 1;
-          let myDamageRelations = new Object(element.damage_relations);
-          for (let item of myDamageRelations.double_damage_from) {
-            // w/o creating myDamageRelations object, this was just returning the names of elements b/c it's an API response in JSON, I think...
-            // not even 100% sure what the hell happened there, but creating this object solved the problem.
-            if (enemyPokemon.types.includes(item.name)) {
-              // this DOES increment twice. good.
-              console.log(`My pokemon takes double damage from: ${item.name}`);
-              enemyProbability *= Math.sqrt(2);
-              console.log(`enemyProbability: ${enemyProbability}`);
-            }
-          }
-          for (let item of myDamageRelations.double_damage_to) {
-            if (enemyPokemon.types.includes(item.name)) {
-              console.log(
-                `My pokemon has deals double damage to: ${item.name}`
-              );
-              friendProbability *= Math.sqrt(2);
-              console.log(`friendProbability: ${friendProbability}`);
-            }
-          }
-          for (let item of myDamageRelations.half_damage_from) {
-            if (enemyPokemon.types.includes(item.name)) {
-              console.log(`My pokemon takes half damage from: ${item.name}`);
-              enemyProbability /= Math.sqrt(2);
-              console.log(
-                `enemyProbability got divided by sqrt(2): ${enemyProbability}`
-              );
-            }
-          }
-          for (let item of myDamageRelations.half_damage_to) {
-            if (enemyPokemon.types.includes(item.name)) {
-              console.log(`My pokemon deals half damage to: ${item.name}`);
-              friendProbability /= Math.sqrt(2);
-              console.log(
-                `My probability got divided by sqrt(2): ${friendProbability}`
-              );
-            }
-          }
-          for (let item of myDamageRelations.no_damage_from) {
-            if (enemyPokemon.types.includes(item.name)) {
-              console.log(`My pokemon takes no damage from: ${item.name}`);
-              enemyProbability = 0;
-              console.log(`enemyProbability for this iteration became 0`);
-            }
-          }
-          for (let item of myDamageRelations.no_damage_to) {
-            if (enemyPokemon.types.includes(item.name)) {
-              console.log(`My pokemon deals no damage to: ${item.name}`);
-              friendProbability = 0;
-              console.log(`friendProbability for this iteration became 0`);
-            }
-          }
-
-          friendEffectivenessArray.push(friendProbability);
-          enemyEffectivenessArray.push(enemyProbability);
-        });
+        [response1, response2].forEach((response) =>
+          handleDamageCalc(response)
+        );
       })
       .then(() => {
-        console.log("friend: ", friendEffectivenessArray);
-        console.log("enemy: ", enemyEffectivenessArray);
-        console.log("friendPokemon.types", friendPokemon.types);
-        console.log("enemyPokemon.types", enemyPokemon.types);
-        handleProbability(friendEffectivenessArray, enemyEffectivenessArray);
-
-        // this looks good for when my pokemon has 1 type
-        // it's also fine whenever the enemy has 2 types and I have 1 type.
+        processForExit();
       });
-    // so far I now have access to BOTH damage_relations objects now
-
-    // now I can iterate over both of these damage relations objects
-    // .then(([response1, response2]) => {
-    //   let friendProbability = 1;
-    //   let enemyProbability = 1;
-    //   for (response in response1) {
-    //     console.log(response.damage_relations);
-    //   }
-    // });
-  } else {
-    // singular
+  }
+  // or if pokemon has just 1 type:
+  else {
     fetch(`https://pokeapi.co/api/v2/type/${friendPokemon.types[0]}/`)
       .then((response) => response.json())
       .then((response) => {
-        let friendProbability = 1;
-        let enemyProbability = 1;
-        let myDamageRelations = new Object(response.damage_relations);
-        // ^^ Is there a JSON method I could also use here?
-        console.log(myDamageRelations);
-        for (let item of myDamageRelations.double_damage_from) {
-          // w/o creating myDamageRelations object, this was just returning the names of elements b/c it's an API response in JSON, I think...
-          // not even 100% sure what the hell happened there, but creating this object solved the problem.
-          if (enemyPokemon.types.includes(item.name)) {
-            // this DOES increment twice. good.
-            console.log(`My pokemon takes double damage from: ${item.name}`);
-            enemyProbability *= Math.sqrt(2);
-            console.log(`enemyProbability: ${enemyProbability}`);
-          }
-        }
-        for (let item of myDamageRelations.double_damage_to) {
-          if (enemyPokemon.types.includes(item.name)) {
-            console.log(`My pokemon has deals double damage to: ${item.name}`);
-            friendProbability *= Math.sqrt(2);
-            console.log(`friendProbability: ${friendProbability}`);
-          }
-        }
-        for (let item of myDamageRelations.half_damage_from) {
-          if (enemyPokemon.types.includes(item.name)) {
-            console.log(`My pokemon takes half damage from: ${item.name}`);
-            enemyProbability /= Math.sqrt(2);
-            console.log(
-              `enemyProbability got divided by sqrt(2): ${enemyProbability}`
-            );
-          }
-        }
-        for (let item of myDamageRelations.half_damage_to) {
-          if (enemyPokemon.types.includes(item.name)) {
-            console.log(`My pokemon deals half damage to: ${item.name}`);
-            friendProbability /= Math.sqrt(2);
-            console.log(
-              `My probability got divided by sqrt(2): ${friendProbability}`
-            );
-          }
-        }
-        for (let item of myDamageRelations.no_damage_from) {
-          if (enemyPokemon.types.includes(item.name)) {
-            console.log(`My pokemon takes no damage from: ${item.name}`);
-            enemyProbability = 0;
-            console.log(`enemyProbability for this iteration became 0`);
-          }
-        }
-        for (let item of myDamageRelations.no_damage_to) {
-          if (enemyPokemon.types.includes(item.name)) {
-            console.log(`My pokemon deals no damage to: ${item.name}`);
-            friendProbability = 0;
-            console.log(`friendProbability for this iteration became 0`);
-          }
-        }
-
-        friendEffectivenessArray.push(friendProbability);
-        enemyEffectivenessArray.push(enemyProbability);
+        handleDamageCalc(response);
       })
       .then(() => {
-        console.log("friend: ", friendEffectivenessArray);
-        console.log("enemy: ", enemyEffectivenessArray);
-        console.log("friendPokemon.types", friendPokemon.types);
-        console.log("enemyPokemon.types", enemyPokemon.types);
-        handleProbability(friendEffectivenessArray, enemyEffectivenessArray);
-
-        // this looks good for when my pokemon has 1 type
-        // it's also fine whenever the enemy has 2 types and I have 1 type.
+        processForExit();
       });
   }
 
@@ -463,29 +369,6 @@ function handleProbability(friendEffectivenessArray, enemyEffectivenessArray) {
       enemy: ${enemyPokemon.types}`;
   }
 }
-
-/*
-
-myDamageRelations:
-
-{double_damage_from: Array(3), double_damage_to: Array(4), half_damage_from: Array(6), half_damage_to: Array(4), no_damage_from: Array(0), …}
-double_damage_from: 
-(3) [{…}, {…}, {…}]
-double_damage_to: 
-(4) [{…}, {…}, {…}, {…}]
-half_damage_from: 
-(6) [{…}, {…}, {…}, {…}, {…}, {…}]
-half_damage_to: 
-(4) [{…}, {…}, {…}, {…}]
-no_damage_from: 
-[]
-no_damage_to: 
-[]
-[[Prototype]]
-: 
-Object
-
-*/
 
 document.getElementById("reset").addEventListener("click", function () {
   location.reload();
