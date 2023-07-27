@@ -43,7 +43,7 @@ I can use the sprites property from this response to display images of the pokem
 
 Depending on whether it's my pokemon or the enemy pokemon, I want to display the back_default or front_default, respectively.
 
-From the same GET request, I'll also have access to both my pokemon and my enemy pokemon's types.
+From the same GET request, I'll also have access to that pokemon's types:
 
 ```
 
@@ -158,4 +158,4 @@ GET https://pokeapi.co/api/v2/type/fire/
 
 I can use the this type effectiveness information to determine who will be the winner of the pokemon battle.
 
-So far, I've only implemented this type of comparison to predict the winner. For the purposes of this project, I think that's enough.
+I've only implemented the type of comparison, treating all else equal. For the purposes of this project, I believe that is sufficient.
