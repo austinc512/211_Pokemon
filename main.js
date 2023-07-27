@@ -108,8 +108,8 @@ compareBtn.addEventListener("click", function () {
   const friendEffectivenessArray = [];
   const enemyEffectivenessArray = [];
 
-  // sometimes my pokemon will have 2 types, and I need to make damage comparisons based on both types
-  // this function is modular and can be used for both scenarios.
+  // My pokemon could have 1 or 2 types, so I need to be able to handle damage comparisons for both when applicable
+  // this function is modular and can be used for both scenarios
   // this also makes the code more DRY
   function handleDamageCalc(response) {
     let friendProbability = 1;
@@ -166,8 +166,8 @@ compareBtn.addEventListener("click", function () {
     enemyEffectivenessArray.push(enemyProbability);
   }
 
-  // at the end of my API response handling, I'm doing a final round of logging.
-  // also makes implementation more DRY
+  // I'm doing a final round of logging at the end of my API response handling, and then I pass the necessary information off to the next function that's declared outside of this event listener.
+  // This also makes my implementation more DRY
   function processForExit() {
     console.log("friend: ", friendEffectivenessArray);
     console.log("enemy: ", enemyEffectivenessArray);
@@ -223,6 +223,8 @@ compareBtn.addEventListener("click", function () {
 });
 
 function handleProbability(friendEffectivenessArray, enemyEffectivenessArray) {
+  // If my pokemon has 2 types, this array will be of length 2, and I'm finding the average of those array values
+  // When my pokemon only has 1 type arr.length = 1, so I could have just compared the values at [0], but this implementation covers both cases.
   const friendScore =
     friendEffectivenessArray.reduce((acc, curr) => acc + curr, 0) /
     friendEffectivenessArray.length;

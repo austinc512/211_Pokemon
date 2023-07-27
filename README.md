@@ -158,4 +158,4 @@ GET https://pokeapi.co/api/v2/type/fire/
 
 I can use the this type effectiveness information to determine who will be the winner of the pokemon battle.
 
-I've only implemented the type of comparison, treating all else equal. For the purposes of this project, I believe that is sufficient.
+I've only implemented a type comparison of pokemon, treating all else equal. For the purposes of this project, I believe that is sufficient.
