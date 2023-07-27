@@ -1,3 +1,4 @@
+// creates the template for a pokemon:
 class Pokemon {
   constructor(textInput, displayArea, formElement, friend) {
     this.textInput = textInput;
@@ -51,6 +52,7 @@ class Pokemon {
   };
 }
 
+// create your pokemon:
 const friendInput = document.getElementById("chooseMyPokemon");
 const friendDisplay = document.getElementById("displayMyPokemon");
 const friendForm = document.getElementById("myPokemon");
@@ -62,6 +64,7 @@ const friendPokemon = new Pokemon(
   "friend"
 );
 
+// create enemy pokemon:
 const enemyInput = document.getElementById("chooseMyPokemon2");
 const enemyDisplay = document.getElementById("displayMyPokemon2");
 const enemyForm = document.getElementById("myPokemon2");
@@ -70,11 +73,13 @@ const enemyPokemon = new Pokemon(enemyInput, enemyDisplay, enemyForm, "enemy");
 
 /*
 
-Other tasks:
+Outstanding tasks:
 
 -make UI look nice
--make win logic
+-make win logic <- I think I'm done with this now???
 
+
+---- MATH LOGIC ----
 example: 
 Fire does half damage to water.
 Water also does double damage to fire.
@@ -87,6 +92,7 @@ Fire does half damage to water. - fire pokemon's probability /= Math.sqrt(2)
 Water also does double damage to fire. - water pokemon's probability *= Math.sqrt(2)
 
 overall the water pokemon is twice as likely to win.
+--- END MATH LOGIC ----
 
 */
 
@@ -172,8 +178,11 @@ compareBtn.addEventListener("click", function () {
 
   // if pokemon has 2 types:
   if (friendPokemon.types.length > 1) {
-    // I need to capture both API responses FIRST and then do some data handling based off of BOTH.
-    // I previously iterated over my pokemon's types in a for loop, which caused a nasty bug when the second promise resolved before the first.
+    // the fetch request is for my pokemon's type(s) to get information about type-effectiveness
+    // Ex: Water type does double damage to fire type and fire does half damage to water
+    // // -Yes, I'm using the pokemons' types as a proxy for how effective they are against each other, and NOT available move-sets.
+    // In the case where my pokemon has 2 types, I need to capture both API responses FIRST and then do some data handling based off of BOTH.
+    // I previously iterated over my pokemon's types in a for loop, which caused a nasty bug when the 2nd promise resolved before the 1st.
     function fetchAPI(url) {
       return fetch(url).then((response) => response.json());
     }
@@ -241,3 +250,13 @@ function handleProbability(friendEffectivenessArray, enemyEffectivenessArray) {
 document.getElementById("reset").addEventListener("click", function () {
   location.reload();
 });
+
+/*
+
+Todo: If an API response fails, display that.
+
+There's the fetch for pokemon, and the fetch for types.
+
+output area should display the failed request or something.
+
+*/
