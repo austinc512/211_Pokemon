@@ -89,7 +89,7 @@ const enemyForm = document.getElementById("myPokemon2");
 
 const enemyPokemon = new Pokemon(enemyInput, enemyDisplay, enemyForm, "enemy");
 
-// Compare types of both pokemon to determine a winner:
+// Capture and compare necessary type information:
 const compareBtn = document.getElementById("comparePokemon");
 compareBtn.addEventListener("click", function () {
   if (!friendPokemon.name || !enemyPokemon.name) {
@@ -221,6 +221,7 @@ compareBtn.addEventListener("click", function () {
   }
 });
 
+// determine the winner:
 function handleProbability(friendEffectivenessArray, enemyEffectivenessArray) {
   // find the average of scores:
   const friendScore =
@@ -242,9 +243,9 @@ function handleProbability(friendEffectivenessArray, enemyEffectivenessArray) {
     );
     winnerOutput.innerHTML = `This logic only considers the pokemons' types, so we do not have enough info to make a prediction
       <br>
-      friend: ${friendPokemon.types}
+      friend pokemon: ${friendPokemon.types}
       <br>
-      enemy: ${enemyPokemon.types}`;
+      enemy pokemon: ${enemyPokemon.types}`;
   }
 }
 
