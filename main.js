@@ -16,18 +16,16 @@ class Pokemon {
   handleFormSubmit = (event) => {
     event.preventDefault();
     console.log(this.textInput);
+    const snippet =
+      this.friend == "friend" ? `your pokemon!` : `an enemy pokemon!`;
     // Don't fetch if a selected pokemon already exists
     if (this.counter > 0) {
-      alert(`You've already selected a pokemon`);
+      alert(`You've already selected ${snippet}`);
       return;
     }
     // Don't fetch if text input is empty
     if (!this.textInput.value) {
-      alert(
-        `you haven't selected ${
-          this.friend == "friend" ? `your pokemon!` : `an enemy pokemon!`
-        }`
-      );
+      alert(`you haven't selected ${snippet}`);
       return;
     }
     const cleanName = this.textInput.value
@@ -46,6 +44,7 @@ class Pokemon {
         console.log(error);
       })
       .then((response) => {
+        console.log(response);
         // capturing name and types from API response
         this.name = response.name;
         console.log(this.name);
@@ -90,23 +89,7 @@ const enemyForm = document.getElementById("myPokemon2");
 
 const enemyPokemon = new Pokemon(enemyInput, enemyDisplay, enemyForm, "enemy");
 
-/*
----- MATH LOGIC ----
-example: 
-Fire does half damage to water.
-Water also does double damage to fire.
-
-I think the multiplier for each of these should be Math.sqrt(2)
-if there's a fire vs. water match up, I want the water pokemon to be twice as likely to win.
-
-
-Water does double damage to fire. -> water pokemon's probability *= Math.sqrt(2)
-Fire does half damage to water. -> fire pokemon's probability /= Math.sqrt(2)
-
-overall the water pokemon is twice as likely to win.
---- END MATH LOGIC ----
-*/
-
+// Compare types of both pokemon to determine a winner:
 const compareBtn = document.getElementById("comparePokemon");
 compareBtn.addEventListener("click", function () {
   if (!friendPokemon.name || !enemyPokemon.name) {
@@ -119,8 +102,8 @@ compareBtn.addEventListener("click", function () {
   const friendEffectivenessArray = [];
   const enemyEffectivenessArray = [];
 
-  // My pokemon could have 1 or 2 types, so I need to be able to handle damage comparisons for both when applicable
-  // this function is modular and can be used for both scenarios
+  // My pokemon could have 1 or 2 types
+  // this function is modular and can be used for both of these scenarios
   // this also makes the code more DRY
   function handleDamageCalc(response) {
     let friendProbability = 1;
@@ -181,7 +164,8 @@ compareBtn.addEventListener("click", function () {
     enemyEffectivenessArray.push(enemyProbability);
   }
 
-  // I'm doing a final round of logging at the end of my API response handling, and then I pass the necessary information off to the next function that's declared outside of this event listener.
+  // I'm doing a final round of logging at the end of my API response handling
+  // then I pass the necessary information to the next function outside of this event listener.
   // This also makes my implementation more DRY
   function processForExit() {
     console.log("friend: ", friendEffectivenessArray);
@@ -232,6 +216,7 @@ compareBtn.addEventListener("click", function () {
       })
       .then(() => {
         processForExit();
+        // ^^ calls handleProbability(friend, enemy) function
       });
   }
 });
@@ -256,8 +241,9 @@ function handleProbability(friendEffectivenessArray, enemyEffectivenessArray) {
       `This logic only considers the pokemons' types, so we do not have enough info to make a prediction`
     );
     winnerOutput.innerHTML = `This logic only considers the pokemons' types, so we do not have enough info to make a prediction
-      
+      <br>
       friend: ${friendPokemon.types}
+      <br>
       enemy: ${enemyPokemon.types}`;
   }
 }
@@ -265,27 +251,3 @@ function handleProbability(friendEffectivenessArray, enemyEffectivenessArray) {
 document.getElementById("reset").addEventListener("click", function () {
   location.reload();
 });
-
-/*
-
-Todo: If an API response fails, display that.
-
-There's the fetch for pokemon, and the fetch for types.
-
-output area should display the failed request or something.
-
-did alert instead
-
-
-whenever you add more than 1 pokemon to each section, it looks like the last one is the active pokemon
-
-added Charizard and Charmander to friendPokemon
-
-friendPokemon.types = ['fire', 'flying', 'fire']
-
-
-friendPokemon.name = 'charmander'
-
-
-
-*/
