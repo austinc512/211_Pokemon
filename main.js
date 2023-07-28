@@ -91,11 +91,6 @@ const enemyForm = document.getElementById("myPokemon2");
 const enemyPokemon = new Pokemon(enemyInput, enemyDisplay, enemyForm, "enemy");
 
 /*
-
-Outstanding tasks:
-
--make UI look nice
-
 ---- MATH LOGIC ----
 example: 
 Fire does half damage to water.
@@ -110,7 +105,6 @@ Fire does half damage to water. -> fire pokemon's probability /= Math.sqrt(2)
 
 overall the water pokemon is twice as likely to win.
 --- END MATH LOGIC ----
-
 */
 
 const compareBtn = document.getElementById("comparePokemon");
@@ -136,14 +130,18 @@ compareBtn.addEventListener("click", function () {
       if (enemyPokemon.types.includes(item.name)) {
         console.log(`My pokemon takes double damage from: ${item.name}`);
         enemyProbability *= Math.sqrt(2);
-        console.log(`enemyProbability: ${enemyProbability}`);
+        console.log(
+          `enemyProbability got multiplied by sqrt(2): ${enemyProbability}`
+        );
       }
     }
     for (let item of myDamageRelations.double_damage_to) {
       if (enemyPokemon.types.includes(item.name)) {
         console.log(`My pokemon has deals double damage to: ${item.name}`);
         friendProbability *= Math.sqrt(2);
-        console.log(`friendProbability: ${friendProbability}`);
+        console.log(
+          `friendProbability got multiplied by sqrt(2): ${friendProbability}`
+        );
       }
     }
     for (let item of myDamageRelations.half_damage_from) {
@@ -160,7 +158,7 @@ compareBtn.addEventListener("click", function () {
         console.log(`My pokemon deals half damage to: ${item.name}`);
         friendProbability /= Math.sqrt(2);
         console.log(
-          `My probability got divided by sqrt(2): ${friendProbability}`
+          `friendProbability got divided by sqrt(2): ${friendProbability}`
         );
       }
     }
@@ -193,7 +191,7 @@ compareBtn.addEventListener("click", function () {
     handleProbability(friendEffectivenessArray, enemyEffectivenessArray);
   }
 
-  // if pokemon has just 1 type:
+  // if pokemon has just 1 type this is super straightforward:
   if (friendPokemon.types.length == 1) {
     fetch(`https://pokeapi.co/api/v2/type/${friendPokemon.types[0]}/`)
       .then((response) => response.json())
@@ -209,9 +207,7 @@ compareBtn.addEventListener("click", function () {
   else if (friendPokemon.types.length > 1) {
     // the fetch request is for my pokemon's type(s) to get information about type-effectiveness
     // Ex: Water type does double damage to fire type and fire does half damage to water
-    // // -Yes, I'm using the pokemons' types as a proxy for how effective they are against each other, and NOT available move-sets.
     // In the case where my pokemon has 2 types, I need to capture both API responses FIRST and then do some data handling based off of BOTH.
-    // I previously iterated over my pokemon's types in a for loop, which caused a nasty bug when the 2nd promise resolved before the 1st.
     function fetchAPI(url) {
       return fetch(url).then((response) => response.json());
     }
