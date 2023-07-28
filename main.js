@@ -11,12 +11,25 @@ class Pokemon {
     );
     this.name = "";
     this.types = [];
+    this.counter = 0;
   }
   handleFormSubmit = (event) => {
     event.preventDefault();
     console.log(this.textInput);
-    // NOTE: need to NOT fetch if text input is empty
-    // also, don't fetch if a selected pokemon already exists
+    // Don't fetch if a selected pokemon already exists
+    if (this.counter > 0) {
+      alert(`You've already selected a pokemon`);
+      return;
+    }
+    // Don't fetch if text input is empty
+    if (!this.textInput.value) {
+      alert(
+        `you haven't selected ${
+          this.friend == "friend" ? `your pokemon!` : `an enemy pokemon!`
+        }`
+      );
+      return;
+    }
     const cleanName = this.textInput.value
       .toLowerCase()
       .trim()
@@ -28,10 +41,16 @@ class Pokemon {
         console.log(response);
         return response;
       })
+      .catch((error) => {
+        alert(`That doesn't look like a valid pokemon name, sorry.`);
+        console.log(error);
+      })
       .then((response) => {
         // capturing name and types from API response
         this.name = response.name;
         console.log(this.name);
+        // this.counter handles whether a pokemon already exists
+        this.counter = 1;
         for (let item of response.types) {
           this.types.push(item.type.name);
         }
@@ -76,8 +95,6 @@ const enemyPokemon = new Pokemon(enemyInput, enemyDisplay, enemyForm, "enemy");
 Outstanding tasks:
 
 -make UI look nice
--make win logic <- I think I'm done with this now???
-
 
 ---- MATH LOGIC ----
 example: 
@@ -88,8 +105,8 @@ I think the multiplier for each of these should be Math.sqrt(2)
 if there's a fire vs. water match up, I want the water pokemon to be twice as likely to win.
 
 
-Fire does half damage to water. - fire pokemon's probability /= Math.sqrt(2)
-Water also does double damage to fire. - water pokemon's probability *= Math.sqrt(2)
+Water does double damage to fire. -> water pokemon's probability *= Math.sqrt(2)
+Fire does half damage to water. -> fire pokemon's probability /= Math.sqrt(2)
 
 overall the water pokemon is twice as likely to win.
 --- END MATH LOGIC ----
@@ -99,7 +116,7 @@ overall the water pokemon is twice as likely to win.
 const compareBtn = document.getElementById("comparePokemon");
 compareBtn.addEventListener("click", function () {
   if (!friendPokemon.name || !enemyPokemon.name) {
-    console.log(`not enough info`);
+    alert(`You haven't selected both pokemon.`);
     return;
   }
   console.log(friendPokemon.types);
@@ -176,8 +193,20 @@ compareBtn.addEventListener("click", function () {
     handleProbability(friendEffectivenessArray, enemyEffectivenessArray);
   }
 
+  // if pokemon has just 1 type:
+  if (friendPokemon.types.length == 1) {
+    fetch(`https://pokeapi.co/api/v2/type/${friendPokemon.types[0]}/`)
+      .then((response) => response.json())
+      .then((response) => {
+        handleDamageCalc(response);
+      })
+      .then(() => {
+        processForExit();
+      });
+  }
+
   // if pokemon has 2 types:
-  if (friendPokemon.types.length > 1) {
+  else if (friendPokemon.types.length > 1) {
     // the fetch request is for my pokemon's type(s) to get information about type-effectiveness
     // Ex: Water type does double damage to fire type and fire does half damage to water
     // // -Yes, I'm using the pokemons' types as a proxy for how effective they are against each other, and NOT available move-sets.
@@ -209,22 +238,10 @@ compareBtn.addEventListener("click", function () {
         processForExit();
       });
   }
-  // or if pokemon has just 1 type:
-  else {
-    fetch(`https://pokeapi.co/api/v2/type/${friendPokemon.types[0]}/`)
-      .then((response) => response.json())
-      .then((response) => {
-        handleDamageCalc(response);
-      })
-      .then(() => {
-        processForExit();
-      });
-  }
 });
 
 function handleProbability(friendEffectivenessArray, enemyEffectivenessArray) {
-  // If my pokemon has 2 types, this array will be of length 2, and I'm finding the average of those array values
-  // When my pokemon only has 1 type arr.length = 1, so I could have just compared the values at [0], but this implementation covers both cases.
+  // find the average of scores:
   const friendScore =
     friendEffectivenessArray.reduce((acc, curr) => acc + curr, 0) /
     friendEffectivenessArray.length;
@@ -260,5 +277,19 @@ Todo: If an API response fails, display that.
 There's the fetch for pokemon, and the fetch for types.
 
 output area should display the failed request or something.
+
+did alert instead
+
+
+whenever you add more than 1 pokemon to each section, it looks like the last one is the active pokemon
+
+added Charizard and Charmander to friendPokemon
+
+friendPokemon.types = ['fire', 'flying', 'fire']
+
+
+friendPokemon.name = 'charmander'
+
+
 
 */
