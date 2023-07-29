@@ -1,15 +1,10 @@
-/* body {
-  background-image: url(./gen3_overlay_1.png);
-  background-repeat: no-repeat;
-  background-size: cover;
-  width: 556px;
-  height: 371px;
-  margin: 0 auto;
-  text-align: center;
-} */
+body {
+  margin-left: 0;
+  overflow: hidden;
+}
 
 @font-face {
-  font-family: "8-bit"; /* Choose a name for your font */
+  font-family: "8-bit";
   src: url("./fonts/8-bit.ttf") format("truetype");
 }
 
@@ -18,11 +13,14 @@
   font-family: "8-bit";
 }
 
-/* body {
-  min-height: 100vh;
-  width: 1053px;
-  margin: 0 auto;
-} */
+#background_img {
+  position: absolute;
+  min-height: 50vh;
+  min-width: 80vw;
+  bottom: 0;
+  z-index: -10;
+  margin: 0;
+}
 
 #logo {
   height: 80px;
@@ -32,36 +30,58 @@
   text-align: center;
 }
 
+#bulbasaur {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: -5;
+  height: 175px;
+  width: auto;
+}
+
+#charizard {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: -5;
+  height: 175px;
+  width: auto;
+}
+
+#pikachu {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  z-index: -5;
+  height: 150px;
+  width: auto;
+}
+
+#squirtle {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  z-index: -5;
+  height: 150px;
+  width: auto;
+}
+
 #battlefield {
-  /* background-image: url(./pokemon_battlefield_1.jpeg);
-  background-repeat: no-repeat;
-  background-size: cover; */
-  /* width: 556px; */
   margin: 20px auto;
-  /* width: 100vw;
-  max-width: 1053px; */
-  /* text-align: center; */
-  /* border: 5px solid red; */
   width: min-content;
   position: relative;
   border-radius: 12px;
   padding: 0;
 }
 
-/* #battlefield {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  8:38
-} */
 .center-image {
-  /* width: 100%; */
   border: 7px outset limegreen;
   display: block;
   width: 500px;
   height: auto;
+  padding: 5px;
   border-radius: 12px;
+  background-color: black;
 }
 
 .overlay-image {
@@ -72,7 +92,7 @@
 
 .overlay-image2 {
   position: absolute;
-  top: 18%;
+  top: 22%;
   right: 15%;
 }
 
@@ -96,6 +116,7 @@
 
 #predictWinner {
   grid-area: winner;
+  padding-top: 10px;
 }
 
 #input-group {
@@ -115,14 +136,12 @@
   padding: 4px;
   min-width: 556px;
   max-width: 679px;
+  background-color: #f2f2f2;
 }
 
-/* max-width: 890 */
 @media (max-width: 890px) {
   #input-group {
     max-width: 553px;
-    /* margin-right: 150px;
-    margin-left: auto; */
     margin: 10px auto;
   }
 }
