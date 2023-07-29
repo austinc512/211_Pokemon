@@ -28,11 +28,10 @@ class Pokemon {
       alert(`you haven't selected ${snippet}`);
       return;
     }
-    const cleanName = this.textInput.value
-      .toLowerCase()
-      .trim()
-      .match(/[a-z]/gi)
-      .join("");
+    const cleanName = this.textInput.value.toLowerCase().trim();
+    // mr. mime (indexed as mr-mime) fucked this all up. I can't clean the input of non-alphabetical characters now.
+    // .match(/[a-z]/gi)
+    // .join("");
     fetch(`https://pokeapi.co/api/v2/pokemon/${cleanName}`)
       .then((response) => response.json())
       .then((response) => {
