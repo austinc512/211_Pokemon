@@ -84,7 +84,7 @@ const friendPokemon = new Pokemon(
 
 // create enemy pokemon:
 const enemyInput = document.getElementById("chooseMyPokemon2");
-const enemyDisplay = document.getElementById("displayMyPokemon2");
+const enemyDisplay = document.getElementById("displayEnemyPokemon");
 const enemyForm = document.getElementById("myPokemon2");
 
 const enemyPokemon = new Pokemon(enemyInput, enemyDisplay, enemyForm, "enemy");
@@ -243,9 +243,9 @@ function handleProbability(friendEffectivenessArray, enemyEffectivenessArray) {
     );
     winnerOutput.innerHTML = `This logic only considers the pokemons' types, so we do not have enough info to make a prediction
       <br>
-      friend pokemon: ${friendPokemon.types}
+      friend pokemon: ${friendPokemon.types.join(" and ")}
       <br>
-      enemy pokemon: ${enemyPokemon.types}`;
+      enemy pokemon: ${enemyPokemon.types.join(" and ")}`;
   }
 }
 
