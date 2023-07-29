@@ -7,3 +7,78 @@
   margin: 0 auto;
   text-align: center;
 } */
+
+@font-face {
+  font-family: "8-bit"; /* Choose a name for your font */
+  src: url("./fonts/8-bit.ttf") format("truetype");
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "8-bit";
+}
+
+/* body {
+  min-height: 100vh;
+  width: 1053px;
+  margin: 0 auto;
+} */
+
+#battlefield {
+  /* background-image: url(./pokemon_battlefield_1.jpeg);
+  background-repeat: no-repeat;
+  background-size: cover; */
+  /* width: 556px; */
+  margin: 20px auto;
+  /* width: 100vw;
+  max-width: 1053px; */
+  /* text-align: center; */
+  border: 5px solid red;
+  width: min-content;
+  position: relative;
+}
+
+/* #battlefield {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  8:38
+} */
+.center-image {
+  /* width: 100%; */
+  border: 2px solid limegreen;
+  display: block;
+  width: 500px;
+  height: auto;
+}
+
+.overlay-image {
+  position: absolute;
+  bottom: 4%;
+  left: 24%;
+  /* top: 60%; */
+  /* Adjust the top position as needed */
+  /* left: 25%; */
+  /* Adjust the left position as needed */
+  /* transform: translate(-50%, -50%); */
+  /* Add more styles like width, height, etc., as needed for the overlay images */
+}
+
+.overlay-image2 {
+  position: absolute;
+  top: 18%;
+  right: 15%;
+  /* top: 60%; */
+  /* Adjust the top position as needed */
+  /* left: 25%; */
+  /* Adjust the left position as needed */
+  /* transform: translate(-50%, -50%); */
+  /* Add more styles like width, height, etc., as needed for the overlay images */
+}
+
+#input-group {
+  display: flex;
+  min-height: 15vh;
+  justify-content: center;
+}
