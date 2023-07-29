@@ -24,6 +24,14 @@
   margin: 0 auto;
 } */
 
+#logo {
+  height: 80px;
+  width: auto;
+  margin: 10px auto;
+  display: block;
+  text-align: center;
+}
+
 #battlefield {
   /* background-image: url(./pokemon_battlefield_1.jpeg);
   background-repeat: no-repeat;
@@ -33,9 +41,11 @@
   /* width: 100vw;
   max-width: 1053px; */
   /* text-align: center; */
-  border: 5px solid red;
+  /* border: 5px solid red; */
   width: min-content;
   position: relative;
+  border-radius: 12px;
+  padding: 0;
 }
 
 /* #battlefield {
@@ -47,38 +57,72 @@
 } */
 .center-image {
   /* width: 100%; */
-  border: 2px solid limegreen;
+  border: 7px outset limegreen;
   display: block;
   width: 500px;
   height: auto;
+  border-radius: 12px;
 }
 
 .overlay-image {
   position: absolute;
   bottom: 4%;
   left: 24%;
-  /* top: 60%; */
-  /* Adjust the top position as needed */
-  /* left: 25%; */
-  /* Adjust the left position as needed */
-  /* transform: translate(-50%, -50%); */
-  /* Add more styles like width, height, etc., as needed for the overlay images */
 }
 
 .overlay-image2 {
   position: absolute;
   top: 18%;
   right: 15%;
-  /* top: 60%; */
-  /* Adjust the top position as needed */
-  /* left: 25%; */
-  /* Adjust the left position as needed */
-  /* transform: translate(-50%, -50%); */
-  /* Add more styles like width, height, etc., as needed for the overlay images */
+}
+
+/* grid stuff */
+
+#myPokemon {
+  grid-area: myPokemon;
+}
+#myPokemon2 {
+  grid-area: enemyPokemon;
+}
+
+#comparePokemon {
+  grid-area: compare;
+  padding: 0;
+}
+
+#reset {
+  grid-area: reset;
+}
+
+#predictWinner {
+  grid-area: winner;
 }
 
 #input-group {
-  display: flex;
+  margin: 10px auto;
   min-height: 15vh;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 0.7fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 0.5fr;
+  grid-template-areas:
+    "myPokemon  winner winner"
+    "enemyPokemon winner winner"
+    "compare . ."
+    "reset . .";
+  gap: 1%;
+  border: 7px outset red;
+  border-radius: 12px;
+  padding: 4px;
+  min-width: 556px;
+  max-width: 679px;
+}
+
+/* max-width: 890 */
+@media (max-width: 890px) {
+  #input-group {
+    max-width: 553px;
+    /* margin-right: 150px;
+    margin-left: auto; */
+    margin: 10px auto;
+  }
 }
