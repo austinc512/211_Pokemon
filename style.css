@@ -1,6 +1,6 @@
 body {
   margin-left: 0;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 @font-face {
@@ -13,9 +13,15 @@ body {
   font-family: "8-bit";
 }
 
+html {
+  background-image: url("./images/pokemon_background_1.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 #background_img {
   position: absolute;
-  min-height: 50vh;
+  min-height: 2000px;
   min-width: 80vw;
   bottom: 0;
   z-index: -10;
@@ -32,8 +38,8 @@ body {
 
 #bulbasaur {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 2%;
+  right: 2%;
   z-index: -5;
   height: 175px;
   width: auto;
@@ -58,12 +64,14 @@ body {
 }
 
 #squirtle {
-  position: absolute;
+  /* position: absolute;
   bottom: 14px;
-  left: 14px;
+  left: 14px; */
   z-index: -5;
   height: 150px;
   width: auto;
+  float: left;
+  margin-bottom: 50px;
 }
 
 #battlefield {
