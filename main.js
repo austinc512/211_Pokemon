@@ -1,3 +1,6 @@
+// We don't actually use this for the Pokemon API
+// const apiKey = process.env.API_SECRET_KEY;
+
 // creates the template for a pokemon:
 class Pokemon {
   constructor(textInput, displayArea, formElement, friend) {
@@ -43,6 +46,9 @@ class Pokemon {
         console.log(error);
       })
       .then((response) => {
+        // even when I .catch(), it still tries to enter this .then() call
+        // the whole asynchronous operation errors out, and it's not a problem
+        // is there a better solution just using try/catch? I should look into that later.
         console.log(response);
         // capturing name and types from API response
         this.name = response.name;
