@@ -1,6 +1,6 @@
 ## Pokemon Collection
 
-[https://austinc512.github.io/211_Pokemon/](Link to My Project)
+[Link to My Project](https://austinc512.github.io/211_Pokemon/)
 
 [https://www.pokeapi.co/](https://pokeapi.co/)
 
